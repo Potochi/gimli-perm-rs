@@ -1,7 +1,7 @@
 use std::ops::{Shl, Shr};
 use std::simd::{Simd, simd_swizzle};
 
-use crate::constants::{GIMLI_XOR_CONSTANT};
+use crate::constants::GIMLI_XOR_CONSTANT;
 use crate::permutation::traits::GimliPermutation;
 use crate::simd_rotate;
 
@@ -13,7 +13,7 @@ pub struct GimliAVX2State
 
 impl GimliAVX2State
 {
-    pub fn from_state( state: [Simd<u32, 4>; 3]) -> GimliAVX2State{
+    pub fn from_state(state: [Simd<u32, 4>; 3]) -> GimliAVX2State {
         Self {
             state
         }

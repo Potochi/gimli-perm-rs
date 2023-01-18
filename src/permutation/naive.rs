@@ -38,9 +38,9 @@ impl GimliNaive {
             let y = gimli_get!(state, 1, j).rotate_left(9);
             let z = gimli_get!(state, 2, j);
 
-            state.state[gimli_idx!( 2, j)] = x ^ z.shl(1) ^ (y & z).shl(2);
-            state.state[gimli_idx!( 1, j)] = y ^ x ^ (x | z).shl(1);
-            state.state[gimli_idx!( 0, j)] = z ^ y ^ (x & y).shl(3);
+            state.state[gimli_idx!(2, j)] = x ^ z.shl(1) ^ (y & z).shl(2);
+            state.state[gimli_idx!(1, j)] = y ^ x ^ (x | z).shl(1);
+            state.state[gimli_idx!(0, j)] = z ^ y ^ (x & y).shl(3);
         }
     }
 }

@@ -1,7 +1,9 @@
-use gimli::permutation::simd::{GimliAVX2, GimliAVX2State};
 use std::fs;
 use std::io::{Read, Result};
+
 use gimli::constants::GIMLI_SIZE;
+use gimli::permutation::simd::{GimliAVX2, GimliAVX2State};
+use gimli::permutation::traits::GimliPermutation;
 
 fn main() -> Result<()> {
     let args = std::env::args().collect::<Vec<_>>();
@@ -9,7 +11,7 @@ fn main() -> Result<()> {
     if args.len() != 2 {
         eprintln!("Usage: {} <input_file>", args[0]);
 
-        return Ok(())
+        return Ok(());
     }
 
     let mut input_file = fs::File::open(&args[1])?;
@@ -33,6 +35,8 @@ fn main() -> Result<()> {
 
 
         gimli = gimli ^ GimliAVX2State::from_arr(chunk_fixed.as_slice().try_into().unwrap());
+
+        GimliAVX2::gimli_inplace(&mut gimli);
     }
 
     println!("{:#?}", gimli.to_arr());

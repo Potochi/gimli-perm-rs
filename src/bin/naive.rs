@@ -1,7 +1,9 @@
-use gimli::permutation::naive::{GimliNaive, GimliState};
 use std::fs;
 use std::io::{Read, Result};
+
 use gimli::constants::GIMLI_SIZE;
+use gimli::permutation::naive::{GimliNaive, GimliState};
+use gimli::permutation::traits::GimliPermutation;
 
 fn main() -> Result<()> {
     let args = std::env::args().collect::<Vec<_>>();
@@ -9,7 +11,7 @@ fn main() -> Result<()> {
     if args.len() != 2 {
         eprintln!("Usage: {} <input_file>", args[0]);
 
-        return Ok(())
+        return Ok(());
     }
 
     let mut input_file = fs::File::open(&args[1])?;
@@ -23,19 +25,35 @@ fn main() -> Result<()> {
 
     let mut gimli = GimliState::from_arr([0u32; 12]);
 
+    let mut chunks = 0usize;
     for chunk
-        in input_content.chunks_exact(GIMLI_SIZE * std::mem::size_of::<u32>()) {
+    in input_content.chunks_exact(GIMLI_SIZE * std::mem::size_of::<u32>()) {
 
         // SAFETY: This uses chunks exact, so the slice should always be convertible to a
         // static array of the same size
         let chunk_fixed = chunk.chunks_exact(4).map(|x|
             u32::from_le_bytes(x.try_into().unwrap())).collect::<Vec<_>>();
 
-
         gimli = gimli ^ GimliState::from_arr(chunk_fixed.as_slice().try_into().unwrap());
+
+        GimliNaive::gimli_inplace(&mut gimli);
+
+        // if chunks == 2 {
+        //     println!("Input: {:?}", chunk_fixed);
+        //
+        //     println!("{:#?}", gimli.state);
+        //
+        //     panic!();
+        // }
+
+        chunks += 1;
     }
 
-    println!("{:#?}", gimli.state);
+    println!("Chunks: {}", chunks);
+
+    for x in gimli.state {
+        println!("{}", x);
+    }
 
     Ok(())
 }
